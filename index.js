@@ -56,15 +56,19 @@ app.post('/listarUsuario', (req, res) => {
 })
 
 
-app.post('/denuncias', (req, res) => {
-    const id = req.body.id
+app.get('/denuncias', (req, res) => {
+    const id = req.query.id;
+    let sql;
+    let values = [];
     if(id){
-        const sql = "SELECT * FROM denuncias WHERE id = ?";
-        values = id
+        console.log("Com Id")
+        sql = "SELECT * FROM denuncias INNER JOIN usuarios ON denuncias.idUsuario = usuarios.id WHERE denuncias.idUsuario = ?";
+        values = [id]
     }else{
-        const sql = "SELECT * FROM denuncias";
+        console.log("Sem Id")
+        sql = "SELECT * FROM denuncias INNER JOIN usuarios ON denuncias.idUsuario = usuarios.id";
     }
-
+    console.log(" o id: ", values)
     con.query(sql, values, function(error, result) { 
         if (error) throw error;
         res.json(result)
