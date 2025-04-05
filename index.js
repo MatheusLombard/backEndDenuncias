@@ -71,7 +71,16 @@ app.get('/denuncias', (req, res) => {
     console.log(" o id: ", values)
     con.query(sql, values, function(error, result) { 
         if (error) throw error;
-        res.json(result)
+
+        const parsed = result.map(row => {
+            if (row.imagem) {
+                row.imagemBase64 = `data:image/jpeg;base64,${row.imagem.toString('base64')}`;
+                delete row.imagem; // remove o campo BLOB cru se quiser
+            }
+            return row;
+        });
+
+        res.json(parsed)
     })
 })
 
