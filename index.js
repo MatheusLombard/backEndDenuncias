@@ -73,13 +73,13 @@ app.get('/denuncias', (req, res) => {
         if (error) throw error;
 
         const parsed = result.map(row => {
-            if (row.imagem) {
-                row.imagemBase64 = `data:image/jpeg;base64,${row.imagem.toString('base64')}`;
-                delete row.imagem; // remove o campo BLOB cru se quiser
-            }
-            return row;
-        });
+    if (row.imagem) {
+        // Se a imagem já está no formato "data:image/png;base64,..." — não mexa
+        row.imagemBase64 = `data:image/png;base64,${row.imagem.toString('base64')}`;
 
+    }
+    return row;
+});
         res.json(parsed)
     })
 })

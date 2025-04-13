@@ -4,7 +4,14 @@ const conexao = mysql.createConnection({
     host : 'localhost',
     user : 'root',
     password : '',
-    database : 'bdDenuncias'
+    database : 'bdDenuncias',
+    typeCast: function (field, next) {
+        if (field.type === "BLOB" && field.length) {
+            return field.buffer();
+        }
+        return next();
+    }
+    
 })
 
 conexao.connect(function(error){
