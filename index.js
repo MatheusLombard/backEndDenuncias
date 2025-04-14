@@ -62,11 +62,28 @@ app.get('/denuncias', (req, res) => {
     let values = [];
     if(id){
         console.log("Com Id")
-        sql = "SELECT * FROM denuncias INNER JOIN usuarios ON denuncias.idUsuario = usuarios.id WHERE denuncias.idUsuario = ?";
+        sql = `
+        SELECT 
+            denuncias.id AS denuncia_id, 
+            usuarios.id AS usuario_id, 
+            denuncias.*, 
+            usuarios.* 
+        FROM denuncias 
+        INNER JOIN usuarios ON denuncias.idUsuario = usuarios.id 
+        WHERE denuncias.idUsuario = ?
+    `;
         values = [id]
     }else{
         console.log("Sem Id")
-        sql = "SELECT * FROM denuncias INNER JOIN usuarios ON denuncias.idUsuario = usuarios.id";
+        sql = `
+        SELECT 
+            denuncias.id AS denuncia_id, 
+            usuarios.id AS usuario_id, 
+            denuncias.*, 
+            usuarios.* 
+        FROM denuncias 
+        INNER JOIN usuarios ON denuncias.idUsuario = usuarios.id 
+    `;;
     }
     console.log(" o id: ", values)
     con.query(sql, values, function(error, result) { 
@@ -81,6 +98,19 @@ app.get('/denuncias', (req, res) => {
     return row;
 });
         res.json(parsed)
+    })
+})
+
+app.put('/denuncias', (req, res) => {
+    const id = req.query.id;
+
+    const sql = `UPDATE denuncias SET pendente = 'Não' WHERE denuncias.id = ?`;
+
+    const values = [id];
+
+    con.query(sql, values, function(error, result) { 
+        if (error) throw error;
+        res.json(result)
     })
 })
 
